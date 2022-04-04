@@ -101,7 +101,38 @@ function newAuthoGetHandler(ev) {
     authGet(host + "/messages/", token).then(
         data => htmlGetTokensMessages.innerHTML = JSON.stringify(data)
     )
-    
+
 }
 
 botonGetMensajes.addEventListener("click", newAuthoGetHandler);
+
+/**
+ * POST con autenticación
+ */
+
+const postMensaje = document.querySelector("#postMensaje");
+const botonPostMensajes = document.querySelector("#botonPostMensajes");
+
+async function authPost(url, token, data) {
+    const response = await fetch(
+        url,
+        {
+            method: "POST",
+            body: data,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: token
+            }
+        }
+    );
+    const responseData = await response.json();
+    return responseData;
+}
+
+function newMessageHandler(ev) {
+    const token = authToken(id.value, secret.value);
+    let data = JSON.stringify({content: postMensaje.value});
+    authPost(host+"/message/", token, data);
+
+}
+botonPostMensajes.addEventListener("click", newMessageHandler);
