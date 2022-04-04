@@ -21,16 +21,12 @@ function updateButtonClickHandler() {
 htmlUpdateButton.addEventListener("click", updateButtonClickHandler)
 
 
-//Funciones para registrar usuario POST
-let userLogin = document.querySelector("#usuario").value;
-let passwordLogin = document.querySelector("#password").value;
-let loginButton = document.querySelector("#logIn");
+//Funciones para registrar usuario POST (Solo va haciéndolo con el debugger)
+const loginButton = document.querySelector("#logIn");
 
-let data = JSON.stringify({ userName: userLogin, password: passwordLogin });
-
-async function post(url, data) {
-    const response = await fetch(
-        url,
+async function newUser(url, data) {
+    const responses = await fetch(
+        url + "/login/",
         {
             method: 'POST',
             body: data,
@@ -39,20 +35,63 @@ async function post(url, data) {
             }
         }
     );
-    const responseData = await response.json();
-    return responseData;
 }
 
-function loginButtonClickHandler() {
-    post(host + "/login/", data);
+function newUserHandler(ev) {
+    ev.preventDefault();
+    let user = document.querySelector("#usuario");
+    let pass = document.querySelector("#password");
+    let datafail = { userName: user.value, password: pass.value };
+    const data = JSON.stringify(datafail);
+    newUser(host, data);
+
+}
+loginButton.addEventListener("click", newUserHandler);
+
+
+/**
+ * Create authorization token
+ */
+
+const crearToken = document.querySelector("#crearToken");
+let id = document.querySelector("#id");
+let secret = document.querySelector("#password2")
+const htmlGetTokens = document.querySelector("#getTokens");
+
+function authToken(id, secret) {
+
+    // En autenticación Basic, usuario y contraseña se separan con ':'
+    const authToken = `${id}:${secret}`;
+    // Y se codifican en Base64
+    const base64token = btoa(authToken);
+    console.log(base64token);
+    return `Basic ${base64token}`;
 }
 
+function newAuthoHandler(ev){
+    ev.preventDefault();
+    htmlGetTokens.innerText= authToken(id, secret);
 
-loginButton.addEventListener("click", takeValues);
-loginButton.addEventListener("click", loginButtonClickHandler);
+}
 
-function takeValues() {
-    userLogin = document.querySelector("#usuario").value;
-    passwordLogin = document.querySelector("#password").value;
-    data = JSON.stringify({ userName: userLogin, password: passwordLogin });
+crearToken.addEventListener("click",newAuthoHandler);
+
+/**
+ * GET con autenticación
+ */
+
+ const token = authToken(id,secret);
+ //authGet(url+"/messages/", token);
+
+ async function authGet(url, token) {
+    const response = await fetch(
+        url,
+        { 
+            headers: {
+                Authorization: token
+            }
+        }
+    );
+    const data = await response.json();
+    return data;
 }

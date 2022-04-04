@@ -1,22 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="index.mjs" type="module"></script>
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="index.mjs" type="module"></script>
+  <title>Document</title>
 </head>
+
 <body>
-    <h1>Probadores API</h1>
-    <h2>Respuesta GET /users/: <span id="getUsers"></span></h2>
-    <button id="updateButton">Update</button>
-    <h2>Registrar POST /login/: </h2>
-    <form>
-      <label>Usuario</label><input type="text" id="usuario"/>
-      <label>Password</label><input type="text" id="password"/>
-      <button id="logIn">Log in</button>
-    </form>
-    
+  <h1>Probadores API</h1>
+  <h2>Respuesta GET /users/: <span id="getUsers"></span></h2>
+  <button id="updateButton">Update</button>
+  <h2>Registrar POST /login/: </h2>
+  <form>
+    <label>Usuario</label><input type="text" id="usuario" />
+    <label>Password</label><input type="text" id="password" />
+    <button id="logIn">Log in</button>
+  </form>
+  <h2>Crear autorización token</h2>
+  <form>
+    <label>ID</label><input type="text" id="id" />
+    <label>Password</label><input type="text" id="password2" />
+    <button id="crearToken">CrearToken</button>
+  </form>
+  <span id="getTokens"></span>
+  <h2>GET con autenticación</h2>
+
 </body>
+
 </html>
