@@ -54,7 +54,10 @@ function authMiddleware (request, response, next) {
         }
         const [ source, password ] = decodeBasicToken(request);
         findSource(source, password, (error, data)=>{
-            if (error) console.error(error);
+            if (error) {
+                console.error(error)
+                throw error;
+            }
             if ( data ) {
                 next();
             } else {
@@ -66,66 +69,110 @@ function authMiddleware (request, response, next) {
 }
 
 app.post('/login/', (request, response) => {
-    const { userName, password } = request.body;
-    findUser(userName, password, (error, data)=>{
-        if (error) console.error(error);
-        if ( data ) {
-            response.status(401);
-            response.send("Usuario ya registrado");
-        } else {
-            const newUser = new User(userName, password);
-            insertUser(newUser,sqlCallback);
-            const json = JSON.stringify(newUser.id)
-            response.send(json);
+    try {
+        const { userName, password } = request.body;
+        if ( ! userName || ! password ) {
+            response.status(400)
+            response.send("Must provide 'userName' and 'password' JSON");
+            return
         }
-    });
-
+        findUser(userName, password, (error, data)=>{
+            if (error) {
+                console.error(error)
+                throw error;
+            }
+            if ( data ) {
+                response.status(401);
+                response.send("Usuario ya registrado");
+                return
+            } else {
+                const newUser = new User(userName, password);
+                insertUser(newUser,sqlCallback);
+                const json = JSON.stringify(newUser.id)
+                response.send(json);
+                return
+            }
+        });
+    } catch (err) {
+        response.status(500)
+        response.send(err)
+        return
+    }
 });
 
 app.get('/users/', (request, response)=>{
-    getUsers((error, data)=>{
-        if ( error ) {
-            console.error(error);
-            response.status(500)
-            response.send("Database error.")
-        }
-        if ( data ){
-            const json = JSON.stringify(data)
-            response.send(json);
-        }
-    });
+    try {
+        getUsers((error, data)=>{
+            if ( error ) {
+                console.error(error);
+                response.status(500)
+                response.send("Database error.")
+                return
+            }
+            if ( data ){
+                const json = JSON.stringify(data)
+                response.send(json);
+                return
+            }
+        });
+    } catch (err) {
+        response.status(500)
+        response.send(err)
+        return
+    }
 });
 
 app.post('/message/', authMiddleware, (request, response) => {
-    const [ source ] =  decodeBasicToken(request)
-    const { content } = request.body;
-    const newMessage = new Message(source, content);
-    insertMessage(newMessage);
-    getLastMessages(1, (error, data)=>{
-        if ( error ) {
-            console.error(error);
-            response.status(500)
-            response.send("Database error.")
+    try {
+        const [ source ] =  decodeBasicToken(request)
+        const { content } = request.body;
+        if ( ! source || ! content ) {
+            response.status(400)
+            response.send("Must provide a valid authentication token and a 'content' JSON");
+            return
         }
-        if ( data ) {
-            response.json(data);
-            response.send();
-        }
-    })
+        const newMessage = new Message(source, content);
+        insertMessage(newMessage);
+        getLastMessages(1, (error, data)=>{
+            if ( error ) {
+                console.error(error);
+                response.status(500)
+                response.send("Database error.")
+                return
+            }
+            if ( data ) {
+                response.json(data);
+                response.send();
+                return
+            }
+        })
+    } catch (err) {
+        response.status(500)
+        response.send(err)
+        return
+    }
 });
 
 app.get('/messages/', authMiddleware, (request, response) => {
-    getLastMessages(1, (error, data)=>{
-        if ( error ) {
-            console.error(error);
-            response.status(500)
-            response.send("Database error.")
-        }
-        if ( data ) {
-            response.json(data);
-            response.send();
-        }
-    })
+    try {
+        getLastMessages(15, (error, data)=>{
+            if ( error ) {
+                console.error(error);
+                response.status(500)
+                response.send("Database error.")
+                return
+            }
+            if ( data ) {
+                response.json(data);
+                response.send();
+                return
+            }
+        })
+    } catch (err) {
+        response.status(500)
+        response.send(err)
+        return
+    }
 });
 
 app.listen(process.env.PORT, () => {
