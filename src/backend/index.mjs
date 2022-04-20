@@ -151,6 +151,7 @@ app.post('/message/', authMiddleware, (request, response) => {
             }
             if ( data ) {
                 response.json(data);
+                response.send();
                 return
             }
         })
@@ -172,6 +173,7 @@ app.get('/messages/', authMiddleware, (request, response) => {
             }
             if ( data ) {
                 response.json(data);
+                response.send();
                 return
             }
         })
