@@ -21,7 +21,7 @@ function updateButtonClickHandler() {
 htmlUpdateButton.addEventListener("click", updateButtonClickHandler)
 
 
-//Funciones para registrar usuario POST (Solo va haciéndolo con el debugger)
+//Funciones para registrar usuario POST 
 const loginButton = document.querySelector("#logIn");
 
 async function newUser(url, data) {
@@ -71,7 +71,6 @@ function authToken(id, secret) {
 function newAuthoHandler(ev) {
     ev.preventDefault();
     htmlGetTokens.innerText = authToken(id, secret);
-
 }
 
 crearToken.addEventListener("click", newAuthoHandler);
