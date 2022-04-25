@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { Context } from "../../storage/SharedStorage";
 import { API_URL, post } from "../../aux_api";
+import "./SignUp.css"
 
 function SignUp () {
 

@@ -1,0 +1,24 @@
+.messagesContainer {
+    background-color: var(--colorBackground);
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+.message {
+    width: 60%;
+    background-color: var(--colorMain);
+}
+
+.myMessage {
+    align-self: end;
+    background-color: var(--colorSecondary);
+}
+
+ul, li {
+    list-style: none;
+    padding: var(--mainPadding);
+}
+
+li {
+    margin: var(--inputsMargin);
+}
